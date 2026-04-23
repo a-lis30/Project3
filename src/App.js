@@ -1,5 +1,7 @@
 import { Routes, Route, Link } from "react-router-dom";
 import PlayerCompare from "./components/PlayerCompare";
+import ListOfSeasons from "./components/ListOfSeasons";
+import PitcherCompare from "./components/PitcherCompare";
 
 function Home() {
   return (
