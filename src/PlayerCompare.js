@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-const BASE_URL = "https://statsapi.mlb.com";
+const BASE_URL = "https://statsapi.mlb.com/api/v1";
 
 function PlayerCompare() {
   const [player1, setPlayer1] = useState(null);
@@ -8,29 +8,31 @@ function PlayerCompare() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // Local API call function (kept inside component)
-  async function fetchPlayerHittingStats(playerId, season, gameType = "R") {
-    const params = new URLSearchParams({
-      league_list_id: "'mlb'",
-      game_type: gameType,
-      season: season,
-      player_id: playerId
-    });
-
-    const url = `${BASE_URL}/json/named.sport_hitting_tm.bam?${params.toString()}`;
+  async function fetchPlayerHittingStats(playerId, season) {
+    const url = `${BASE_URL}/people/${playerId}/stats?stats=season&group=hitting&season=${season}`;
 
     const response = await fetch(url);
+
     if (!response.ok) {
       throw new Error("Failed to fetch player stats");
     }
 
     const data = await response.json();
 
-    const row =
-      data?.sport_hitting_tm?.queryResults?.row;
+    const statSplit = data?.stats?.[0]?.splits?.[0];
 
-    // Normalize (API may return array or object)
-    return Array.isArray(row) ? row[0] : row;
+    if (!statSplit) {
+      throw new Error("No hitting stats found for this player");
+    }
+
+    return {
+      name: statSplit.player.fullName,
+      avg: statSplit.stat.avg,
+      hr: statSplit.stat.homeRuns,
+      rbi: statSplit.stat.rbi,
+      ops: statSplit.stat.ops,
+      ab: statSplit.stat.atBats
+    };
   }
 
   useEffect(() => {
@@ -39,8 +41,8 @@ function PlayerCompare() {
         setLoading(true);
 
         const [p1, p2] = await Promise.all([
-          fetchPlayerHittingStats(592450, 2024), // Player 1 ID
-          fetchPlayerHittingStats(605141, 2024)  // Player 2 ID
+          fetchPlayerHittingStats(592450, 2024),
+          fetchPlayerHittingStats(605141, 2024)
         ]);
 
         setPlayer1(p1);
@@ -66,31 +68,36 @@ function PlayerCompare() {
         <thead>
           <tr>
             <th>Stat</th>
-            <th>{player1.name_display_first_last}</th>
-            <th>{player2.name_display_first_last}</th>
+            <th>{player1.name}</th>
+            <th>{player2.name}</th>
           </tr>
         </thead>
+
         <tbody>
           <tr>
             <td>AVG</td>
             <td>{player1.avg}</td>
             <td>{player2.avg}</td>
           </tr>
+
           <tr>
             <td>HR</td>
             <td>{player1.hr}</td>
             <td>{player2.hr}</td>
           </tr>
+
           <tr>
             <td>RBI</td>
             <td>{player1.rbi}</td>
             <td>{player2.rbi}</td>
           </tr>
+
           <tr>
             <td>OPS</td>
             <td>{player1.ops}</td>
             <td>{player2.ops}</td>
           </tr>
+
           <tr>
             <td>AB</td>
             <td>{player1.ab}</td>

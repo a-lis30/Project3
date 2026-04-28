@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-const BASE_URL = "https://statsapi.mlb.com";
+const BASE_URL = "https://lookup-service-prod.mlb.com";
 
 function PitcherCompare() {
   const [pitcher1, setPitcher1] = useState(null);
@@ -8,7 +8,7 @@ function PitcherCompare() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  async function fetchPitchingStats(playerId, season, gameType = "R") {
+  async function fetchPitchingStats(playerId, season, gameType = "'R'") {
     const params = new URLSearchParams({
       league_list_id: "'mlb'",
       game_type: gameType,
