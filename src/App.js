@@ -3,12 +3,17 @@ import PlayerCompare from "./PlayerCompare";
 import ListOfSeasons from "./ListOfSeasons";
 import PitcherCompare from "./PitcherCompare";
 import HittingLeaders from "./HittingLeaders";
+import PitchingLeaders from "./PitchingLeaders";
 
 function Home() {
   return (
     <div> 
       <h2>Home</h2>
-      <p>Welcome to the MLB Stats Dashboard</p>
+      <p>Welcome to the MLB Stats Dashboard!</p>
+      <img src="https://1000logos.net/wp-content/uploads/2017/04/MLB-Logo.png"
+      alt = "MLB logo"
+      style={{ width: 640, height: 346 }}
+/>
     </div>
   );
 }
@@ -23,6 +28,7 @@ function App() {
         <Link style={styles.link} to="/compare">Player Compare</Link>
         <Link style={styles.link} to="/pitchers">Pitcher Compare</Link>
         <Link style={styles.link} to="/hitting-leaders">Hitting Leaders</Link>
+        <Link style={styles.link} to="/pitching-leaders">Pitching Leaders</Link>
       </nav>
 
       {/* Page Content */}
@@ -33,6 +39,7 @@ function App() {
           <Route path="/compare" element={<PlayerCompare />} />
           <Route path="/pitchers" element={<PitcherCompare />} />
           <Route path="/hitting-leaders" element={<HittingLeaders />} />
+          <Route path="/pitching-leaders" element={<PitchingLeaders />} />
         </Routes>
       </div>
     </div>
